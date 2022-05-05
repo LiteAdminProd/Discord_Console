@@ -1,0 +1,2 @@
+node WSServer.js
+pause
