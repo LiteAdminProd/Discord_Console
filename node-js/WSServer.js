@@ -1,4 +1,4 @@
-var fs = require('fs')
+﻿var fs = require('fs')
 ini = require('ini')
 
 var config = ini.parse(fs.readFileSync('../config.ini', 'utf-8'))
@@ -6,9 +6,11 @@ var config = ini.parse(fs.readFileSync('../config.ini', 'utf-8'))
 const prefix = config.prefix 
 const hook_url = config.discord_hook 
 const bot_token = config.bot_token 
-const token_key = config.token_key 
 const adminid = config.adminid 
 const chatid = config.chatid
+
+const join_mes = 'Player join:'
+const left_mes = 'Player left:'
 
 const WebSocket = require('ws')
 const { Webhook } = require('discord-webhook-node');
@@ -30,8 +32,8 @@ console.log('Ready')
 
 function getmsg(res){
 	let msg = ''
-	for(let i = 1; i < res.split(prefix).length; i++){
-		msg += res.split(prefix)[i] + ' '
+	for(let i = 1; i < res.split(':').length; i++){
+		msg += res.split(':')[i] + ' '
 	}
 	return msg
 }
@@ -47,17 +49,17 @@ wss.on('connection', socket => {
 	}, 100);
 	socket.on('message', packet => {
 		res = String(packet)
-		if(res.startsWith('chat' + prefix)){
-			chat.send(getmsg(res));
+		if(res.startsWith('chat:')){
+			chat.send('<' + res.split(':')[1] + '> ' + res.split(':')[2]);
 		}
-		if(res.startsWith('output' + prefix)){
+		if(res.startsWith('output:')){
 			chat.send('response:\n' + getmsg(res));
 		}
-		if(res.startsWith('join' + prefix)){
-			chat.send(getmsg(res));
+		if(res.startsWith('join:')){
+			chat.send(join_mes + ' ' + getmsg(res));
 		}
-		if(res.startsWith('left' + prefix)){
-			chat.send(getmsg(res));
+		if(res.startsWith('left:')){
+			chat.send(left_mes + ' ' + getmsg(res));
 		}
 		
     })
@@ -66,13 +68,13 @@ wss.on('connection', socket => {
 
 client.on('messageCreate', (message) => {
 	if (message.content.startsWith(prefix) && message.member.roles.cache.some(role => role.id == adminid)) {
-		command = message.content + prefix + token_key
+		command = 'cmd:' + message.content.replace(prefix, '')
 	}
 	else if(message.channel.id == chatid){
 		if(!message.content.startsWith('<')){
 			if(!message.content.startsWith('Player')){
 				if(!message.content.startsWith('response')){
-					command = 'broad' + prefix + '§9[Discord]§r ' + message.author.username + '⁚ ' + message.content
+					command = 'broad:§9[Discord]§r ' + message.author.username + '> ' + message.content
 				}
 			}
 		}
