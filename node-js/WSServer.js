@@ -1,7 +1,7 @@
 ﻿var fs = require('fs')
 ini = require('ini')
 
-var config = ini.parse(fs.readFileSync('../config.ini', 'utf-8'))
+var config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'))
 
 const prefix = config.prefix 
 const hook_url = config.discord_hook 
