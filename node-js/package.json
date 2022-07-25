@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "discord-webhook-node": "^1.1.8",
+    "discord.js": "^13.7.0",
+    "ini": "^3.0.0",
+    "nodejs-websocket": "^1.7.2",
+    "ws": "^8.6.0"
+  }
+}
